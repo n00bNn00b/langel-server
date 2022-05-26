@@ -1,0 +1,13 @@
+{
+  "name": "langel-server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "node index.js",
+    "start-dev": "nodemon index.js"
+  },
+  "dependencies": {
+    "express": "^4.18.1"
+  }
+}
