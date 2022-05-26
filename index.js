@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 const { MongoClient, ServerApiVersion } = require("mongodb");
 const app = express();
 require("dotenv").config();
@@ -10,7 +11,8 @@ const port = process.env.PORT || 5000;
  * Middleware
  *
  */
-
+app.use(cors());
+app.use(express.json());
 /*
  *
  *=====================================
@@ -31,7 +33,17 @@ const run = async () => {
   try {
     await client.connect();
     console.log("DB Connected!");
-    // const productsCollection = client.db("langelDB").collection("products");
+    //   db collections
+    const productsCollection = client.db("langelDB").collection("products");
+
+    //   REST API
+    //   products API
+    app.get("/products", async (req, res) => {
+      const query = {};
+      const cursor = productsCollection.find(query);
+      const products = await cursor.toArray();
+      res.send(products);
+    });
   } finally {
     //
   }
