@@ -37,6 +37,7 @@ const run = async () => {
     const productsCollection = client.db("langelDB").collection("products");
     // review collection
     const reviewsCollection = client.db("langelDB").collection("reviews");
+    const usersCollection = client.db("langelDB").collection("users");
 
     //   REST API
     //   products API
@@ -61,6 +62,31 @@ const run = async () => {
       const cursor = reviewsCollection.find(query);
       const reviews = await cursor.toArray();
       res.send(reviews);
+    });
+    // post review
+
+    // users
+    app.post("/users", async (req, res) => {
+      const users = req.body;
+      const query = {
+        name: users.name,
+        email: users.email,
+        gitHub: users.gitHub,
+        linkedIn: users.linkedIn,
+        url: users.url,
+      };
+      const exists = await usersCollection.findOne(query);
+      if (exists) {
+        return res.send({ success: false, users: exists });
+      }
+      const result = usersCollection.insertOne(users);
+      return res.send(result);
+    });
+    app.get("/user/:email", async (req, res) => {
+      const email = req.params.email;
+      const filter = { email: email };
+      const user = await usersCollection.findOne(filter);
+      res.send(user);
     });
   } finally {
     //
