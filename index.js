@@ -54,6 +54,7 @@ const run = async () => {
     // review collection
     const reviewsCollection = client.db("langelDB").collection("reviews");
     const usersCollection = client.db("langelDB").collection("users");
+    const ordersCollection = client.db("langelDB").collection("orders");
 
     //   REST API
     //   products API
@@ -62,6 +63,13 @@ const run = async () => {
       const cursor = productsCollection.find(query);
       const products = await cursor.toArray();
       res.send(products);
+    });
+    // users
+    app.get("/users", async (req, res) => {
+      const query = {};
+      const cursor = usersCollection.find(query);
+      const users = await cursor.toArray();
+      res.send(users);
     });
 
     //   single product
@@ -105,6 +113,7 @@ const run = async () => {
       const user = await usersCollection.findOne(filter);
       res.send(user);
     });
+    //
     app.post("/login", (req, res) => {
       const user = req.body;
       console.log(user);
@@ -112,6 +121,22 @@ const run = async () => {
         expiresIn: "1d",
       });
       res.send({ accessToken });
+    });
+    // order post
+    app.post("/order", async (req, res) => {
+      const orders = req.body;
+      const query = {
+        name: orders.name,
+        email: orders.email,
+        order: orders.minorder,
+        address: orders.address,
+      };
+      const exists = await ordersCollection.findOne(query);
+      if (exists) {
+        return res.send({ success: true, orders: orders });
+      }
+      const result = await ordersCollection.insertOne(orders);
+      return res.send(result);
     });
   } finally {
     //
