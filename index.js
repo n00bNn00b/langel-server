@@ -85,6 +85,13 @@ const run = async () => {
       const orders = await cursor.toArray();
       res.send(orders);
     });
+    // admin get api
+    app.get("/admin/:email", async (req, res) => {
+      const email = req.params.email;
+      const user = await usersCollection.findOne({ email: email });
+      const isAdmin = user.role == "admin";
+      res.send({ admin: isAdmin });
+    });
     // admin
     app.put("/user/admin/:email", async (req, res) => {
       const email = req.params.email;
@@ -154,6 +161,8 @@ const run = async () => {
         email: orders.email,
         order: orders.minorder,
         address: orders.address,
+        productName: orders.productName,
+        price: orders.price,
       };
       const exists = await ordersCollection.findOne(query);
       if (exists) {
