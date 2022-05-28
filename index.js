@@ -71,6 +71,30 @@ const run = async () => {
       const users = await cursor.toArray();
       res.send(users);
     });
+    app.get("/orders", async (req, res) => {
+      const query = {};
+      const cursor = ordersCollection.find(query);
+      const orders = await cursor.toArray();
+      res.send(orders);
+    });
+    // order filter by email
+    app.get("/orders/:email", async (req, res) => {
+      const email = req.params.email;
+      const filter = { email: email };
+      const cursor = ordersCollection.find(filter);
+      const orders = await cursor.toArray();
+      res.send(orders);
+    });
+    // admin
+    app.put("/user/admin/:email", async (req, res) => {
+      const email = req.params.email;
+      const filter = { email: email };
+      const updateUser = {
+        $set: { role: "admin" },
+      };
+      const result = await usersCollection.updateOne(filter, updateUser);
+      res.send(result);
+    });
 
     //   single product
     app.get("/product/:id", async (req, res) => {
