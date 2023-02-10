@@ -163,6 +163,7 @@ const run = async () => {
         address: orders.address,
         productName: orders.productName,
         price: orders.price,
+        totalPrice: Number(parseFloat(orders.totalPrice)),
       };
       const exists = await ordersCollection.findOne(query);
       if (exists) {
