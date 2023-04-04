@@ -64,6 +64,23 @@ const run = async () => {
       const products = await cursor.toArray();
       res.send(products);
     });
+    app.post("/products", async (req, res) => {
+      const products = req.body;
+      const query = {
+        name: products.name,
+        description: products.description,
+        image: products.image,
+        minOrder: products.minOrder,
+        quantity: products.quantity,
+        price: products.price,
+      };
+      const exists = await productsCollection.findOne(query);
+      if (exists) {
+        return res.send({ success: false, products: exists });
+      }
+      const result = await productsCollection.insertOne(products);
+      return res.send(result);
+    });
     // users
     app.get("/users", async (req, res) => {
       const query = {};
